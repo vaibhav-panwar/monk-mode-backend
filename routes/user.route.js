@@ -49,6 +49,9 @@ userRoute.post("/login", async (req, res) => {
                 res.status(200).send({
                     isError: false,
                     message: "login successfull",
+                    user:{
+                        name:user.name
+                    },
                     token
                 })
             }

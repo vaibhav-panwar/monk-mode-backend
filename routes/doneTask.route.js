@@ -29,7 +29,8 @@ doneTaskRoute.get("/get", async (req, res) => {
                 $project: {
                     taskDetails: { taskName: 1, duration: 1 },
                     taskID:1,
-                    userID:1
+                    userID:1,
+                    date:1
                 }
             }
         ])

@@ -46,6 +46,47 @@ doneTaskRoute.get("/get", async (req, res) => {
     }
 })
 
+doneTaskRoute.get("/get/:date", async (req, res) => {
+    try {
+        let date = req.params.date;
+        let { userID } = req.body;
+        let userIDAsObjectID = new mongoose.Types.ObjectId(userID)
+        let data = await DoneTaskModel.aggregate([
+            {
+                $match: {
+                    userID: userIDAsObjectID,
+                    date
+                }
+            },
+            {
+                $lookup: {
+                    from: 'tasks',
+                    localField: "taskID",
+                    foreignField: '_id',
+                    as: "taskDetails"
+                }
+            },
+            {
+                $project: {
+                    taskDetails: { taskName: 1, duration: 1 },
+                    taskID: 1,
+                    userID: 1,
+                    date: 1
+                }
+            }
+        ])
+        res.status(200).send({
+            isError: false,
+            data
+        })
+    } catch (error) {
+        res.status(400).send({
+            isError: true,
+            error: error.message
+        })
+    }
+})
+
 doneTaskRoute.post("/create", async (req, res) => {
     try {
         let { userID, taskID, date } = req.body;

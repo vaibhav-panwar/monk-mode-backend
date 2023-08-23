@@ -22,6 +22,23 @@ taskRoute.get("/get", async (req, res) => {
     }
 })
 
+taskRoute.get("/get/:date", async (req, res) => {
+    try {
+        let date = req.params;
+        let { userID } = req.body;
+        let tasks = await TaskModel.find({ userID ,date});
+        res.status(200).send({
+            isError: false,
+            tasks
+        })
+    } catch (error) {
+        res.status(400).send({
+            isError: true,
+            error: error.message
+        })
+    }
+})
+
 taskRoute.post("/create", async (req, res) => {
     try {
         let { userID, taskName, duration } = req.body;
